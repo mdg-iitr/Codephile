@@ -5,11 +5,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/getsentry/sentry-go"
 	"log"
 	"net/url"
 	"strconv"
 	"time"
+
+	"github.com/getsentry/sentry-go"
 
 	. "github.com/mdg-iitr/Codephile/conf"
 	"github.com/mdg-iitr/Codephile/models/types"
@@ -27,23 +28,27 @@ func (s Scrapper) GetProfileInfo() types.ProfileInfo {
 		hub = sentry.CurrentHub()
 	}
 	var profile types.ProfileInfo
-	url := "http://codeforces.com/api/user.info?handles=" + s.Handle
-	data, _ := common.HitGetRequest(url)
-	if data == nil {
-		log.Println(errors.New("GetRequest failed. Please check connection status"))
-		hub.CaptureException(errors.New("GetRequest failed. Please check connection status"))
-		return types.ProfileInfo{}
-	}
-	err := json.Unmarshal(data, &profile)
-	if err != nil {
+	requestUrl := "http://codeforces.com/api/user.info?handles=" + s.Handle
+	var err error
+	for attempt := 1; attempt < 10; attempt++ {
+		time.Sleep(time.Second * time.Duration(attempt))
+		data, _ := common.HitGetRequest(requestUrl)
+		if data == nil {
+			log.Println(errors.New("GetRequest failed. Please check connection status"))
+			hub.CaptureException(errors.New("GetRequest failed. Please check connection status"))
+		}
+		err = json.Unmarshal(data, &profile)
+		if err == nil {
+			break
+		}
 		log.Println(err.Error())
 		hub.AddBreadcrumb(&sentry.Breadcrumb{
 			Category: "JSON parse error",
 			Message:  string(data),
 		}, nil)
-
+	}
+	if err != nil {
 		hub.CaptureException(err)
-		return types.ProfileInfo{}
 	}
 	return profile
 }
@@ -199,7 +204,7 @@ func (s Scrapper) CheckHandle() (bool, error) {
 			log.Println(err.Error())
 		}
 	}
-	if err != nil{
+	if err != nil {
 		hub.CaptureException(err)
 		return false, err
 	}
