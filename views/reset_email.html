@@ -1,0 +1,82 @@
+<html>
+  <head>
+    <title>Codephile Password Reset</title>
+  </head>
+  <body>
+    <div
+      class="main-password-reset-container"
+      style="
+        margin-left: 18vw;
+        margin-right: 18vw;
+        padding: 2vw;
+        border-color: #30475e;
+        border-width: 4px;
+        border-style: groove;
+      "
+    >
+      <div
+        class="password-reset-heading"
+        style="
+          font-size: 2vw;
+          font-weight: bolder;
+          font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande',
+            'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+          margin-top: 2vh;
+          margin-bottom: 4vh;
+          color: #30475e;
+        "
+      >
+        Reset your password
+      </div>
+      <div class="password-reset-content">
+        <div
+          class="password-reset-main-content"
+          style="
+            font-size: 1.5vw;
+            color: rgb(83, 81, 81);
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            letter-spacing: 0.10002em;
+          "
+        >
+          Tap the button below to reset your Codephile account password.
+          <br />If you didn't request a new password, then safely ignore this
+          mail.
+        </div>
+        <a href="{{.link}}"
+          ><button
+            class="password-reset-button"
+            style="
+              height: 5vw;
+              width: auto;
+              padding: 1vw;
+              background-color: #30475e;
+              color: white;
+              font-size: 1.5vw;
+              font-family: Verdana, Geneva, Tahoma, sans-serif;
+              left: 20%;
+              margin-top: 5vh;
+              margin-bottom: 5vh;
+              position: relative;
+            "
+          >
+            Reset password
+          </button></a>
+        <div
+          class="password-reset-addition-content"
+          style="
+            color: rgb(94, 92, 92);
+            font-size: 1.5vw;
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            letter-spacing: 0.10002em;
+            margin-top: 2vh;
+            margin-bottom: 2vh;
+          "
+        >
+          If that doesn't work, copy and paste the below link in your browser:
+          <br /><br />
+          {{.link}}
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

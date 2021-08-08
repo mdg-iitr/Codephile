@@ -1,14 +1,17 @@
 package models
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
-	"github.com/astaxie/beego"
-	"github.com/getsentry/sentry-go"
-	"github.com/mdg-iitr/Codephile/services/firebase"
+	"html/template"
 	"log"
 	"math/rand"
 	"time"
+
+	"github.com/astaxie/beego"
+	"github.com/getsentry/sentry-go"
+	"github.com/mdg-iitr/Codephile/services/firebase"
 
 	"github.com/mdg-iitr/Codephile/services/mail"
 
@@ -457,8 +460,19 @@ func PasswordResetEmail(email string, hostName string, ctx context.Context) bool
 		return false
 	}
 	link := hostName + "/v1/user/password-reset/" + uniq_id + "/" + user.ID.Hex()
-	body := "Please reset your password by clicking on the following link: \n" + link
-	body += "\nThis link will expire in 1 hr"
+	t := template.New("reset_email.html")
+	var err1 error
+	t, err1 = t.ParseFiles("views/reset_email.html")
+	if err1 != nil {
+		log.Println(err1.Error())
+		return false
+	}
+	var tpl bytes.Buffer
+	if err2 := t.Execute(&tpl, map[string]string{"link": link}); err2 != nil {
+		log.Println(err2.Error())
+		return false
+	}
+	body := tpl.String()
 	go mail.SendMail(email, "Codephile Password Reset", body, ctx)
 	return true
 }

@@ -3,10 +3,11 @@ package mail
 import (
 	"context"
 	"encoding/base64"
-	"github.com/getsentry/sentry-go"
 	"log"
 	"os"
 	"time"
+
+	"github.com/getsentry/sentry-go"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
@@ -55,7 +56,7 @@ func SendMail(to string, subject string, body string, ctx context.Context) {
 
 	emailTo := "To: " + to + "\r\n"
 	sub := "Subject: " + subject + "\n"
-	mime := "MIME-version: 1.0;\nContent-Type: text/plain; charset=\"UTF-8\";\n\n"
+	mime := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
 	msg := []byte(emailTo + sub + mime + "\n" + body)
 
 	message.Raw = base64.URLEncoding.EncodeToString(msg)
